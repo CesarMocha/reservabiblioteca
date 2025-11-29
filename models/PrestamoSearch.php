@@ -26,7 +26,7 @@ class PrestamoSearch extends Prestamo
     {
         return [
             [['pc_idpc'], 'string'],
-            [['id', 'biblioteca_idbiblioteca', 'pc_biblioteca_idbiblioteca', 'libro_id', 'libro_biblioteca_idbiblioteca'], 'integer'],
+            [['id', 'biblioteca_idbiblioteca', 'pc_biblioteca_idbiblioteca', 'libro_id', ], 'integer'],
             [['cedula_solicitante', 'fecha_solicitud', 'fechaentrega', 'tipoprestamo_id', 'personaldata_Ci', 'informacionpersonal_d_CIInfPer', 'informacionpersonal_CIInfPer'], 'safe'],
             [['libroTitulo'], 'safe'], 
             [['tipoSolicitante'], 'safe'],  // Añadir regla para tipoSolicitante
@@ -100,7 +100,6 @@ class PrestamoSearch extends Prestamo
         'prestamo.biblioteca_idbiblioteca' => $this->biblioteca_idbiblioteca,
         'pc_biblioteca_idbiblioteca' => $this->pc_biblioteca_idbiblioteca,
         'libro_id' => $this->libro_id,
-        'libro_biblioteca_idbiblioteca' => $this->libro_biblioteca_idbiblioteca,
     ]);
 
     $query->andFilterWhere(['like', 'tipoprestamo_id', $this->tipoprestamo_id])

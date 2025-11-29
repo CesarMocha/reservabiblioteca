@@ -8,29 +8,27 @@ use Yii;
  * This is the model class for table "libro".
  *
  * @property int $id
- * @property string|null $codigo_barras
+ * @property string|null $ubicacion
+ * @property int|null $numer
+ * @property int $biblioteca_idbiblioteca
+ * @property string|null $clasificacion
+ * @property string $asignatura_id
  * @property string $titulo
  * @property string $autor
- * @property string|null $isbn
- * @property string|null $cute
  * @property string $editorial
- * @property string|null $anio_publicacion
- * @property string|null $estado
- * @property int|null $n_ejemplares
- * @property string|null $ubicacion
- * @property string $categoria_id
- * @property string $asignatura_id
  * @property string $pais_codigopais
- * @property int $biblioteca_idbiblioteca
+ * @property string|null $anio_publicacion
+ * @property string|null $codigo_barras
  *
  * @property Asignatura $asignatura
  * @property Biblioteca $bibliotecaIdbiblioteca
- * @property Categoria $categoria
  * @property Pais $paisCodigopais
  * @property Prestamo[] $prestamos
  */
 class Libro extends \yii\db\ActiveRecord
 {
+
+
     /**
      * {@inheritdoc}
      */
@@ -45,16 +43,15 @@ class Libro extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['titulo', 'autor', 'editorial', 'categoria_id', 'asignatura_IdAsig', 'pais_cod_pais', 'biblioteca_idbiblioteca'], 'required'],
+            [['ubicacion', 'numer', 'clasificacion', 'anio_publicacion', 'codigo_barras'], 'default', 'value' => null],
+            [['numer', 'biblioteca_idbiblioteca'], 'integer'],
+            [['biblioteca_idbiblioteca', 'asignatura_id', 'titulo', 'autor', 'editorial', 'pais_codigopais'], 'required'],
             [['anio_publicacion'], 'safe'],
-            [['n_ejemplares', 'biblioteca_idbiblioteca'], 'integer'],
-            [['codigo_barras', 'titulo', 'autor', 'isbn', 'cute', 'editorial', 'ubicacion'], 'string', 'max' => 100],
-            [['estado'], 'string', 'max' => 10],
-            [['categoria_id', 'asignatura_IdAsig', 'pais_cod_pais'], 'string', 'max' => 10],
-            [['asignatura_IdAsig'], 'exist', 'skipOnError' => true, 'targetClass' => Asignatura::class, 'targetAttribute' => ['asignatura_IdAsig' => 'IdAsig']],
+            [['ubicacion', 'clasificacion', 'titulo', 'autor', 'editorial', 'codigo_barras'], 'string', 'max' => 100],
+            [['asignatura_id', 'pais_codigopais'], 'string', 'max' => 4],
+            [['asignatura_id'], 'exist', 'skipOnError' => true, 'targetClass' => Asignatura::class, 'targetAttribute' => ['asignatura_id' => 'id']],
             [['biblioteca_idbiblioteca'], 'exist', 'skipOnError' => true, 'targetClass' => Biblioteca::class, 'targetAttribute' => ['biblioteca_idbiblioteca' => 'idbiblioteca']],
-            [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categoria::class, 'targetAttribute' => ['categoria_id' => 'id']],
-            [['pais_cod_pais'], 'exist', 'skipOnError' => true, 'targetClass' => Pais::class, 'targetAttribute' => ['pais_cod_pais' => 'cod_pais']],
+            [['pais_codigopais'], 'exist', 'skipOnError' => true, 'targetClass' => Pais::class, 'targetAttribute' => ['pais_codigopais' => 'codigopais']],
         ];
     }
 
@@ -64,21 +61,18 @@ class Libro extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'codigo_barras' => 'Código de Barras',
-            'titulo' => 'Título',
-            'autor' => 'Autor',
-            'isbn' => 'ISBN',
-            'cute' => 'CUTE',
-            'editorial' => 'Editorial',
-            'anio_publicacion' => 'Año de Publicación',
-            'estado' => 'Estado',
-            'n_ejemplares' => 'N de Ejemplares',
-            'ubicacion' => 'Ubicación',
-            'categoria_id' => 'Categoría',
-            'asignatura_IdAsig' => 'Asignatura',
-            'pais_cod_pais' => 'País',
-            'biblioteca_idbiblioteca' => 'Biblioteca',
+            'id' => Yii::t('app', 'ID'),
+            'ubicacion' => Yii::t('app', 'Ubicacion'),
+            'numer' => Yii::t('app', 'Numero'),
+            'biblioteca_idbiblioteca' => Yii::t('app', 'biblioteca'),
+            'clasificacion' => Yii::t('app', 'Clasificacion'),
+            'asignatura_id' => Yii::t('app', 'Asignatura'),
+            'titulo' => Yii::t('app', 'Titulo del libro'),
+            'autor' => Yii::t('app', 'Autor'),
+            'editorial' => Yii::t('app', 'Editorial'),
+            'pais_codigopais' => Yii::t('app', 'Pais '),
+            'anio_publicacion' => Yii::t('app', 'Año de Publicacion'),
+            'codigo_barras' => Yii::t('app', 'Codigo de Barras'),
         ];
     }
 
@@ -89,7 +83,7 @@ class Libro extends \yii\db\ActiveRecord
      */
     public function getAsignatura()
     {
-        return $this->hasOne(Asignatura::class, ['IdAsig' => 'asignatura_IdAsig']);
+        return $this->hasOne(Asignatura::class, ['id' => 'asignatura_id']);
     }
 
     /**
@@ -97,19 +91,9 @@ class Libro extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBibliotecaIdbiblioteca()
+    public function getBiblioteca()
     {
         return $this->hasOne(Biblioteca::class, ['idbiblioteca' => 'biblioteca_idbiblioteca']);
-    }
-
-    /**
-     * Gets query for [[Categoria]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCategoria()
-    {
-        return $this->hasOne(Categoria::class, ['id' => 'categoria_id']);
     }
 
     /**
@@ -117,10 +101,10 @@ class Libro extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getPaisCodigopais()
-    {
-        return $this->hasOne(Pais::class, ['cod_pais' => 'pais_cod_pais']);
-    }
+    public function getPais()
+{
+    return $this->hasOne(Pais::class, ['codigopais' => 'pais_codigopais']);
+}
 
     /**
      * Gets query for [[Prestamos]].
@@ -131,4 +115,5 @@ class Libro extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Prestamo::class, ['libro_id' => 'id', 'libro_biblioteca_idbiblioteca' => 'biblioteca_idbiblioteca']);
     }
+
 }

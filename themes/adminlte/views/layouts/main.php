@@ -52,17 +52,12 @@ $this->registerJsFile($publishedRes[1].'/control_sidebar.js', ['depends' => '\ha
     // Mostrar el menú solo si el usuario ha iniciado sesión
     if (!Yii::$app->user->isGuest) {
         echo $this->render('navbar', ['assetDir' => $assetDir]);
-        echo $this->render('sidebar', ['assetDir' => $assetDir]);
     }
     ?>
 
     <!-- Content Wrapper. Contains page content -->
     <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
     <!-- /.content-wrapper -->
-
-    <!-- Control Sidebar -->
-    <?php // $this->render('control-sidebar') ?>
-    <!-- /.control-sidebar -->
 
 </div>
 

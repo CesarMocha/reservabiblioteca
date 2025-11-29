@@ -17,8 +17,8 @@ class LibroSearch extends Libro
     public function rules()
     {
         return [
-            [['id', 'n_ejemplares', 'biblioteca_idbiblioteca'], 'integer'],
-            [['codigo_barras', 'titulo', 'autor', 'isbn', 'cute', 'editorial', 'anio_publicacion', 'estado', 'ubicacion', 'categoria_id', 'asignatura_IdAsig', 'pais_cod_pais'], 'safe'],
+            [['id', 'numer', 'biblioteca_idbiblioteca'], 'integer'],
+            [['ubicacion', 'clasificacion', 'asignatura_id', 'titulo', 'autor', 'editorial', 'pais_codigopais', 'anio_publicacion', 'codigo_barras'], 'safe'],
         ];
     }
 
@@ -35,10 +35,11 @@ class LibroSearch extends Libro
      * Creates data provider instance with search query applied
      *
      * @param array $params
+     * @param string|null $formName Form name to be used into `->load()` method.
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $formName = null)
     {
         $query = Libro::find();
 
@@ -48,7 +49,7 @@ class LibroSearch extends Libro
             'query' => $query,
         ]);
 
-        $this->load($params);
+        $this->load($params, $formName);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -59,23 +60,20 @@ class LibroSearch extends Libro
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'anio_publicacion' => $this->anio_publicacion,
-            'n_ejemplares' => $this->n_ejemplares,
+            'numer' => $this->numer,
             'biblioteca_idbiblioteca' => $this->biblioteca_idbiblioteca,
+            'anio_publicacion' => $this->anio_publicacion,
         ]);
 
-        $query->andFilterWhere(['like', 'codigo_barras', "%{$this->codigo_barras}%", false])
-        ->andFilterWhere(['like', 'titulo', "%{$this->titulo}%", false])
-        ->andFilterWhere(['like', 'autor', "%{$this->autor}%", false])
-        ->andFilterWhere(['like', 'isbn', "%{$this->isbn}%", false])
-        ->andFilterWhere(['like', 'cute', "%{$this->cute}%", false])
-        ->andFilterWhere(['like', 'editorial', "%{$this->editorial}%", false])
-        ->andFilterWhere(['like', 'estado', "%{$this->estado}%", false])
-        ->andFilterWhere(['like', 'ubicacion', "%{$this->ubicacion}%", false])
-        ->andFilterWhere(['like', 'categoria_id', "%{$this->categoria_id}%", false])
-        ->andFilterWhere(['like', 'asignatura_IdAsig', "%{$this->asignatura_IdAsig}%", false])
-        ->andFilterWhere(['like', 'pais_cod_pais', "%{$this->pais_cod_pais}%", false]);
-  
+        $query->andFilterWhere(['like', 'ubicacion', $this->ubicacion])
+            ->andFilterWhere(['like', 'clasificacion', $this->clasificacion])
+            ->andFilterWhere(['like', 'asignatura_id', $this->asignatura_id])
+            ->andFilterWhere(['like', 'titulo', $this->titulo])
+            ->andFilterWhere(['like', 'autor', $this->autor])
+            ->andFilterWhere(['like', 'editorial', $this->editorial])
+            ->andFilterWhere(['like', 'pais_codigopais', $this->pais_codigopais])
+            ->andFilterWhere(['like', 'codigo_barras', $this->codigo_barras]);
+
         return $dataProvider;
     }
 }

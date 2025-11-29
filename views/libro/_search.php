@@ -18,146 +18,35 @@ use yii\widgets\ActiveForm;
         ],
     ]); ?>
 
-    <?php // $form->field($model, 'id') 
-    ?>
+    <?= $form->field($model, 'id')->textInput(['placeholder' => 'Ingrese ID']) ?>
 
-    <?php // $form->field($model, 'codigo_barras') 
-    ?>
+    <?= $form->field($model, 'ubicacion')->textInput(['placeholder' => 'Ingrese ubicación']) ?>
 
-    <?php // $form->field($model, 'titulo') 
-    ?>
+    <?= $form->field($model, 'numer')->textInput(['placeholder' => 'Ingrese número']) ?>
 
-    <?php // $form->field($model, 'autor') 
-    ?>
+    <?= $form->field($model, 'biblioteca_idbiblioteca')->textInput(['placeholder' => 'Seleccione biblioteca']) ?>
 
-    <?php // $form->field($model, 'isbn') 
-    ?>
+    <?= $form->field($model, 'clasificacion')->textInput(['placeholder' => 'Ingrese clasificación']) ?>
 
-    <?php // echo $form->field($model, 'cute') 
-    ?>
+    <?php echo $form->field($model, 'asignatura_id')->textInput(['placeholder' => 'Ingrese asignatura ID']) ?>
 
-    <?php // echo $form->field($model, 'editorial') 
-    ?>
+    <?php echo $form->field($model, 'titulo')->textInput(['placeholder' => 'Ingrese título del libro']) ?>
 
-    <?php // echo $form->field($model, 'anio_publicacion') 
-    ?>
+    <?php echo $form->field($model, 'autor')->textInput(['placeholder' => 'Ingrese autor']) ?>
 
-    <?php // echo $form->field($model, 'estado') 
-    ?>
+    <?php echo $form->field($model, 'editorial')->textInput(['placeholder' => 'Ingrese editorial']) ?>
 
-    <?php // echo $form->field($model, 'n_ejemplares') 
-    ?>
+    <?php echo $form->field($model, 'pais_codigopais')->textInput(['placeholder' => 'Ingrese código del país']) ?>
 
-    <?php // echo $form->field($model, 'link') 
-    ?>
+    <?php echo $form->field($model, 'anio_publicacion')->textInput(['placeholder' => 'Ingrese año de publicación']) ?>
 
-    <?php // echo $form->field($model, 'categoria_id') 
-    ?>
-
-    <?php // echo $form->field($model, 'asignatura_IdAsig') 
-    ?>
-
-    <?php // echo $form->field($model, 'pais_cod_pais') 
-    ?>
-
-    <?php // echo $form->field($model, 'biblioteca_idbiblioteca') 
-    ?>
-
-
-
-    <div class="row">
-        <div class="col-md-6">
-            <?= $form->field($model, 'titulo')->textInput(['style' => 'width: 100%;', 'placeholder' => 'Nombre del Libro'])->label('Título') ?>
-        </div>
-        <div class="col-md-6">
-            <?= $form->field($model, 'autor')->textInput(['style' => 'width: 100%;', 'placeholder' => 'Autor de la Publicación'])->label('Autor') ?>
-        </div>
-    </div>
-    <?php // echo $form->field($model, 'link') 
-    ?>
-
-    <div class="row">
-        <div class="col-md-6">
-            <?= $form->field($model, 'categoria_id')
-                ->dropDownList(
-                    \yii\helpers\ArrayHelper::map(
-                        \app\models\Categoria::find()->orderBy(['Categoría' => SORT_ASC])->all(),
-                        'id',
-                        'Categoría'
-                    ),
-                    ['prompt' => 'Seleccionar Categoría', 'style' => 'width: 100%;']
-                )->label('Categoría') ?>
-        </div>
-        <div class="col-md-6">
-            <?= $form->field($model, 'asignatura_IdAsig')
-                ->dropDownList(
-                    \yii\helpers\ArrayHelper::map(
-                        \app\models\Asignatura::find()->orderBy(['NombAsig' => SORT_ASC])->all(),
-                        'IdAsig',
-                        'NombAsig'
-                    ),
-                    ['prompt' => 'Seleccionar Asignatura', 'style' => 'width: 100%;']
-                )->label('Asignatura') ?>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <?php $paisesConLibros = \app\models\Pais::find()
-                ->where(['IN', 'cod_pais', \app\models\Libro::find()->select('pais_cod_pais')->distinct()])
-                ->orderBy(['nomb_pais' => SORT_ASC])
-                ->all();
-            ?>
-
-            <?= $form->field($model, 'pais_cod_pais')
-                ->dropDownList(
-                    \yii\helpers\ArrayHelper::map($paisesConLibros, 'cod_pais', 'nomb_pais'),
-                    ['prompt' => 'Seleccionar País', 'style' => 'width: 100%;']
-                )
-                ->label('País de Publicación') ?>
-
-        </div>
-        <div class="col-md-6">
-            <?= $form->field($model, 'anio_publicacion')
-                ->textInput(['style' => 'width: 100%;', 'placeholder' => 'Año de Publicación', 'type' => 'number', 'min' => 1900, 'max' => date('Y')])
-                ->label('Año de Publicación') ?>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <?= $form->field($model, 'codigo_barras')
-                ->textInput(['style' => 'width: 100%;', 'placeholder' => 'Código Interno'])
-                ->label('Código de Barras <i class="fas fa-barcode"></i>') ?>
-        </div>
-        <div class="col-md-6">
-            <?= $form->field($model, 'isbn')->textInput(['style' => 'width: 100%;', 'placeholder' => 'ISBN de la Publicación'])->label('ISBN') ?>
-        </div>
-    </div>
-
-
+    <?php echo $form->field($model, 'codigo_barras')->textInput(['placeholder' => 'Ingrese código de barras']) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('<i class="fas fa-search"></i> Buscar', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Restablecer', ['class' => 'btn btn-outline-secondary', 'id' => 'reset-button']) ?>
+        <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
 </div>
-
-
-<?php
-$js = <<< JS
-document.getElementById('reset-button').addEventListener('click', function() {
-    var inputs = document.querySelectorAll('input[type="text"], input[type="date"], select'); // Obtener todos los campos de filtro
-    inputs.forEach(function(input) {
-        input.value = ''; // Limpiar los valores
-    });
-
-    // Enviar el formulario después de restablecer los campos
-    document.querySelector('form').submit();
-});
-JS;
-$this->registerJs($js);
-?>

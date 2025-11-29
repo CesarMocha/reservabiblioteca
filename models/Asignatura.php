@@ -7,13 +7,15 @@ use Yii;
 /**
  * This is the model class for table "asignatura".
  *
- * @property string $idAsig
- * @property string $NombreAsig
+ * @property string $id
+ * @property string $Nombre
  *
  * @property Libro[] $libros
  */
 class Asignatura extends \yii\db\ActiveRecord
 {
+
+
     /**
      * {@inheritdoc}
      */
@@ -28,10 +30,10 @@ class Asignatura extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['IdAsig', 'NombAsig'], 'required'],
-            [['IdAsig'], 'string', 'max' => 4],
-            [['NombAsig'], 'string', 'max' => 60],
-            [['IdAsig'], 'unique'],
+            [['id', 'Nombre'], 'required'],
+            [['id'], 'string', 'max' => 4],
+            [['Nombre'], 'string', 'max' => 60],
+            [['id'], 'unique'],
         ];
     }
 
@@ -41,8 +43,8 @@ class Asignatura extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'IdAsig' => 'ID',
-            'NombAsig' => 'Nombre',
+            'id' => Yii::t('app', 'ID'),
+            'Nombre' => Yii::t('app', 'Nombre'),
         ];
     }
 
@@ -53,6 +55,7 @@ class Asignatura extends \yii\db\ActiveRecord
      */
     public function getLibros()
     {
-        return $this->hasMany(Libro::class, ['asignatura_IdAsig' => 'IdAsig']);
+        return $this->hasMany(Libro::class, ['asignatura_Id' => 'id']);
     }
+
 }

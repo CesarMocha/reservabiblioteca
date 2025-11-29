@@ -6,70 +6,55 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Libro $model */
 
-$this->title = $model->codigo_barras. ' - ' . $model->titulo;
-$this->params['breadcrumbs'][] = ['label' => 'Libros', 'url' => ['index']];
+// Usamos el título del libro como encabezado principal
+$this->title = $model->titulo;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Libros'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="libro-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="libro-view mt-4">
 
-    <p>
-        <?= Html::a('Actualizar Datos', ['update', 'id' => $model->id, 'biblioteca_idbiblioteca' => $model->biblioteca_idbiblioteca], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Eliminar', ['delete', 'id' => $model->id, 'biblioteca_idbiblioteca' => $model->biblioteca_idbiblioteca], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => '¿Estás seguro de eliminar este elemento?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><?= Html::encode($this->title) ?></h5>
+        </div>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            //'id',
-            'codigo_barras',
-            'titulo',
-            'autor',
-            'isbn',
-            'cute',
-            'editorial',
-            'anio_publicacion',
-            'estado',
-            'n_ejemplares',
-            //'categoria_id',
-            //'asignatura_id',
-            //'pais_codigopais',
-            //'biblioteca_idbiblioteca',
-            //'categoria_id',
-            [
-                'attribute' => 'categoria_id',
-                'value' => function ($model) {
-                    return $model->categoria->Categoría;
-                },
-            ],
-            [
-                'attribute' => 'asignatura_IdAsig',
-                'value' => function ($model) {
-                    return $model->asignatura->NombAsig;
-                },
-            ],
-            [
-                'attribute' => 'pais_cod_pais', // Esto muestra el código del país
-                'value' => function ($model) {
-                    return $model->paisCodigopais->nomb_pais; // Accede al nombre del país relacionado
-                },
-            ],
-            [
-                'attribute' => 'biblioteca_idbiblioteca', // Esto muestra el código del país
-                'value' => function ($model) {
-                    return $model->bibliotecaIdbiblioteca->Campus; // Accede al nombre del país relacionado
-                },
-            ],
-            'ubicacion',
-        ],
-    ]) ?>
+        <div class="card-body">
+
+            <div class="mb-3">
+                <?= Html::a('<i class="fas fa-edit"></i> Actualizar', ['update', 'id' => $model->id, 'biblioteca_idbiblioteca' => $model->biblioteca_idbiblioteca], [
+                    'class' => 'btn btn-sm btn-outline-primary',
+                ]) ?>
+                <?= Html::a('<i class="fas fa-trash-alt"></i> Eliminar', ['delete', 'id' => $model->id, 'biblioteca_idbiblioteca' => $model->biblioteca_idbiblioteca], [
+                    'class' => 'btn btn-sm btn-outline-danger',
+                    'data' => [
+                        'confirm' => Yii::t('app', '¿Estás seguro de eliminar este elemento?'),
+                        'method' => 'post',
+                    ],
+                ]) ?>
+            </div>
+
+            <?= DetailView::widget([
+                'model' => $model,
+                'options' => ['class' => 'table table-bordered table-hover'],
+                'attributes' => [
+                    'id',
+                    'ubicacion',
+                    'numer',
+                    'biblioteca_idbiblioteca',
+                    'clasificacion',
+                    'asignatura_id',
+                    'titulo',
+                    'autor',
+                    'editorial',
+                    'pais_codigopais',
+                    'anio_publicacion',
+                    'codigo_barras',
+                ],
+            ]) ?>
+
+        </div>
+    </div>
 
 </div>

@@ -8,13 +8,13 @@ use Yii;
  * This is the model class for table "biblioteca".
  *
  * @property int $idbiblioteca
- * @property string $Campus
- * @property string|null $Apertura
- * @property string|null $Cierre
- * @property string|null $Email
- * @property string|null $Telefono
+ * @property string $campus
+ * @property string|null $apertura
+ * @property string|null $cierre
+ * @property string|null $email
+ * @property string|null $telefono
  *
- * @property Libro[] $libros
+ * @property Libros2[] $libros
  * @property Pc[] $pcs
  * @property Prestamo[] $prestamos
  */
@@ -34,9 +34,9 @@ class Biblioteca extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['Campus'], 'required'],
-            [['Apertura', 'Cierre'], 'safe'],
-            [['Campus', 'Email', 'Telefono'], 'string', 'max' => 45],
+            [['campus'], 'required'],
+            [['apertura', 'cierre'], 'safe'],
+            [['campus', 'email', 'telefono'], 'string', 'max' => 45],
         ];
     }
 
@@ -46,12 +46,12 @@ class Biblioteca extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'idbiblioteca' => 'id',
-            'Campus' => 'Campus',
-            'Apertura' => 'Apertura',
-            'Cierre' => 'Cierre',
-            'Email' => 'Email',
-            'Telefono' => 'Teléfono',
+            'idbiblioteca' => 'ID',
+            'campus' => 'Campus',
+            'apertura' => 'Apertura',
+            'cierre' => 'Cierre',
+            'email' => 'Email',
+            'telefono' => 'Teléfono',
         ];
     }
 
@@ -62,7 +62,7 @@ class Biblioteca extends \yii\db\ActiveRecord
      */
     public function getLibros()
     {
-        return $this->hasMany(Libro::class, ['biblioteca_idbiblioteca' => 'idbiblioteca']);
+        return $this->hasMany(Libros2::class, ['biblioteca_idbiblioteca' => 'idbiblioteca']);
     }
 
     /**

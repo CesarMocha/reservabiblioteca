@@ -14,8 +14,8 @@ body {
     background-attachment: fixed;
 }
 .registro-form {
-    max-width: 90vw;
-    margin: 0 auto;
+    max-width: 600px;
+    margin: 10px auto; /* Reducimos el margen superior */
     padding: 20px;
     background-color: #f8f8ff;
     border-radius: 10px;
@@ -44,14 +44,13 @@ body {
 /* Estilo adicional para el título */
 .registro-title {
     font-size: 2em;
-    margin: 20px 0;
-    color: #191970; /* Color del texto para el título */
+    margin: 10px 0; /* Reducimos el margen superior */
+    color: #191970;
     font-family: 'Raleway', sans-serif;
-    font-size: 2em;
     font-weight: 700;
-    letter-spacing: 2px; /* Ajusta el espaciado entre letras */
-    text-transform: uppercase; /* Convierte el texto a mayúsculas, si es necesario */
-
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
 }
 ");
 
@@ -101,27 +100,17 @@ body {
         <?= $form->field($model, 'Nivel')->dropDownList($niveles, ['prompt' => 'Seleccione su Nivel Académico']) ?>
     </div>
 
-<div class="form-group">
-    <button id="submitButton" class="btn btn-primary">Iniciar Registro</button>
-</div>
+    <div class="form-group">
+        <button id="submitButton" class="btn btn-primary btn-block">Iniciar Registro</button>
+    </div>
 
     <?php ActiveForm::end(); ?>
 
-    
-<script>
-    // Agrega un evento de clic al botón de envío
-    document.getElementById("submitButton").addEventListener("click", function(event) {
-        // Pregunta al usuario si está seguro de realizar la acción
-        if (confirm("¿Estás seguro de que deseas unirte a esta comunidad?")) {
-            // Si el usuario hace clic en "Aceptar" en el cuadro de confirmación, se envía el formulario
-            // Si el usuario hace clic en "Cancelar", no se envía el formulario
-            // Puedes poner aquí el código para enviar el formulario si se confirma
-        } else {
-            // Cancela el evento de clic para que el formulario no se envíe
-            event.preventDefault();
-        }
-    });
-</script>
-
+    <script>
+        document.getElementById("submitButton").addEventListener("click", function(event) {
+            if (!confirm("¿Estás seguro de que deseas unirte a esta comunidad?")) {
+                event.preventDefault();
+            }
+        });
+    </script>
 </div>
-

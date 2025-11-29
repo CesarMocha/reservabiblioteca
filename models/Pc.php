@@ -17,6 +17,8 @@ use Yii;
  */
 class Pc extends \yii\db\ActiveRecord
 {
+
+
     /**
      * {@inheritdoc}
      */
@@ -33,8 +35,9 @@ class Pc extends \yii\db\ActiveRecord
         return [
             [['nombre', 'estado', 'biblioteca_idbiblioteca'], 'required'],
             [['biblioteca_idbiblioteca'], 'integer'],
-            [['nombre'], 'string', 'max' => 15],
+            [['nombre'], 'string', 'max' => 45],
             [['estado'], 'string', 'max' => 10],
+            [['biblioteca_idbiblioteca'], 'exist', 'skipOnError' => true, 'targetClass' => Biblioteca::class, 'targetAttribute' => ['biblioteca_idbiblioteca' => 'idbiblioteca']],
         ];
     }
 
@@ -44,10 +47,10 @@ class Pc extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'idpc' => 'Código de PC',
-            'nombre' => 'Nombre',
-            'estado' => 'Estado',
-            'biblioteca_idbiblioteca' => 'Campus',
+            'idpc' => Yii::t('app', 'Idpc'),
+            'nombre' => Yii::t('app', 'Nombre'),
+            'estado' => Yii::t('app', 'Estado'),
+            'biblioteca_idbiblioteca' => Yii::t('app', 'Campus'),
         ];
     }
 
@@ -70,4 +73,17 @@ class Pc extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Prestamo::class, ['pc_idpc' => 'idpc', 'pc_biblioteca_idbiblioteca' => 'biblioteca_idbiblioteca']);
     }
+    public function actionPrestarModal($id)
+{
+    $model = Pc::findOne($id);
+    if (!$model) {
+        throw new \yii\web\NotFoundHttpException('PC no encontrada');
+    }
+
+    return $this->renderAjax('_modal_prestar', [
+        'model' => $model,
+    ]);
+}
+
+
 }

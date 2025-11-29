@@ -5,14 +5,11 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\Libro $model */
 
-$this->title = 'Ingresar Libro';
-$this->params['breadcrumbs'][] = ['label' => 'Libros', 'url' => ['index']];
+$this->title = Yii::t('app', 'Crear Libro');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Libros'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="libro-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

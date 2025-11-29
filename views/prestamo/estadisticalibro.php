@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?= Html::dropDownList(
                                     'asignaturaId',
                                     $asignaturaSeleccionada,
-                                    \yii\helpers\ArrayHelper::map(\app\models\Asignatura::find()->all(), 'IdAsig', 'NombAsig'),
+                                    \yii\helpers\ArrayHelper::map(\app\models\Asignatura::find()->all(), 'id', 'Nombre'),
                                     ['prompt' => 'Seleccione la asignatura', 'class' => 'form-control']
                                 ) ?>
                             </div>

@@ -1,17 +1,16 @@
 <?php
 
 namespace app\controllers;
-
+use yii;
 use app\models\Libro;
 use app\models\LibroSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\db\Query;
-use app\models\Asignatura;
-use app\models\Prestamo;
-use app\models\Biblioteca;
-use Yii;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use yii\data\ActiveDataProvider;
+
+
 
 /**
  * LibroController implements the CRUD actions for Libro model.
@@ -124,6 +123,20 @@ class LibroController extends Controller
         return $this->redirect(['index']);
     }
 
+    
+public function actionEstudiante()
+{
+    $searchModel = new LibroSearch();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+    return $this->render('estudiante', [
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+    ]);
+}
+
+
+
     /**
      * Finds the Libro model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -138,106 +151,93 @@ class LibroController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+    // Exportar a CSV
+public function actionExport()
+{
+    $libros = \app\models\Libro::find()->all();
+
+    $filename = 'libros_export.csv';
+    $fp = fopen('php://output', 'w');
+
+    // Encabezado
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment;filename=' . $filename);
+
+    // Columnas
+    fputcsv($fp, [
+        'ubicacion', 'numero', 'campus', 'clasificacion', 'asignatura',
+        'titulo', 'autor', 'editorial', 'pais', 'anio de publicacion', 'codigo de barras'
+    ]);
+
+    foreach ($libros as $libro) {
+        fputcsv($fp, [
+            $libro->ubicacion,
+            $libro->numer,
+            $libro->biblioteca_idbiblioteca,
+            $libro->clasificacion,
+            $libro->asignatura_id,
+            $libro->titulo,
+            $libro->autor,
+            $libro->editorial,
+            $libro->pais_codigopais,
+            $libro->anio_publicacion,
+            $libro->codigo_barras
+        ]);
     }
 
-    /*public function actionInfo()
-    {
-        $mes = Yii::$app->request->get('mes');
-        $anio = Yii::$app->request->get('anio');
-        $asignatura = Yii::$app->request->get('asignatura');
-        $biblioteca = Yii::$app->request->get('biblioteca');
+    fclose($fp);
+    exit;
+}
+// Importar desde CSV
+public function actionImport()
+{
+    if (Yii::$app->request->isPost && isset($_FILES['importFile'])) {
+        $file = $_FILES['importFile']['tmp_name'];
 
-        // Crea un Query para la consulta de libros
-        $query = (new Query())
-            ->select(['l.titulo AS libro', 'COUNT(*) AS cantidad'])
-            ->from('prestamo p')
-            ->innerJoin('libro l', 'p.libro_id = l.id')
-            ->innerJoin('asignatura a', 'l.asignatura_id = a.id');
+        if (($handle = fopen($file, 'r')) !== false) {
+            $first = true;
+            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                if ($first) {
+                    $first = false; // omitir cabecera
+                    continue;
+                }
 
-        // Aplica condiciones basadas en los valores del formulario
-        if ($mes && $anio) {
-            $query->andWhere(['=', 'MONTH(p.fecha_solicitud)', $mes]);
-            $query->andWhere(['=', 'YEAR(p.fecha_solicitud)', $anio]);
+                $libro = new \app\models\Libro();
+                $libro->ubicacion = $data[0];
+                $libro->numer = $data[1];
+                $libro->biblioteca_idbiblioteca = $data[2];
+                $libro->clasificacion = $data[3];
+                $libro->asignatura_id = $data[4];
+                $libro->titulo = $data[5];
+                $libro->autor = $data[6];
+                $libro->editorial = $data[7];
+                $libro->pais_codigopais = $data[8];
+                $libro->anio_publicacion = $data[9];
+                $libro->codigo_barras = $data[10];
+                $libro->save();
+            }
+            fclose($handle);
         }
 
-        if ($asignatura) {
-            $query->andWhere(['=', 'a.Nombre', $asignatura]);
-        }
+        return $this->asJson(['success' => true, 'message' => 'Importación completada correctamente']);
+    }
 
-        if ($biblioteca) {
-            $query->andWhere(['=', 'l.biblioteca_idbiblioteca', $biblioteca]);
-        }
+    return $this->asJson(['success' => false, 'message' => 'Archivo no válido']);
+}
+public function actionPlantilla()
+{
+    $csvContent = "ubicacion,numero,campus,clasificacion,asignatura,titulo,autor,editorial,pais,anio_de_publicacion,codigo_de_barras\n";
+    $csvContent .= "A1,101,Campus Central,Historia,Matemáticas,Historia Universal,Juan Pérez,Editorial ABC,México,2020,1234567890123\n";
+    $csvContent .= "B2,102,Campus Norte,Literatura,Lengua Española,Don Quijote de la Mancha,Miguel de Cervantes,Editorial XYZ,España,1605,9876543210987\n";
+    $csvContent .= "C3,103,Campus Sur,Ciencias,Física,Fundamentos de Física,Isaac Newton,Editorial MNO,Reino Unido,1687,1231231231231\n";
 
-        // Ejecuta la consulta y obtiene los resultados
-        $topBooksByAsignatura = $query
-            ->groupBy(['l.titulo'])
-            ->orderBy(['cantidad' => SORT_DESC])
-            ->limit(10)
-            ->all();
-
-        $chartData = [
-            'labels' => [], // Inicializa las etiquetas
-            'data' => [],   // Inicializa los datos
-        ];
-
-        foreach ($topBooksByAsignatura as $item) {
-            $chartData['labels'][] = $item['libro'];
-            $chartData['data'][] = $item['cantidad'];
-        }
-
-        // Obtén la lista de meses y años para el formulario
-        $meses = [
-            '01' => 'Enero',
-            '02' => 'Febrero',
-            '03' => 'Marzo',
-            '04' => 'Abril',
-            '05' => 'Mayo',
-            '06' => 'Junio',
-            '07' => 'Julio',
-            '08' => 'Agosto',
-            '09' => 'Septiembre',
-            '10' => 'Octubre',
-            '11' => 'Noviembre',
-            '12' => 'Diciembre',
-        ];
-
-        $anios = array_unique((new Query())
-            ->select('YEAR(fecha_solicitud) as anio')
-            ->from('prestamo')
-            ->distinct()
-            ->orderBy(['anio' => SORT_DESC])
-            ->column());
-
-        $asignaturas = (new Query())
-            ->select('Nombre')
-            ->from('asignatura')
-            ->column();
-
-        // Corrige la consulta para obtener bibliotecas a través de la relación con Libro
-        $bibliotecas = (new Query())
-            ->select(['b.idbiblioteca', 'b.Campus'])
-            ->from('libro l')
-            ->leftJoin('biblioteca b', 'l.biblioteca_idbiblioteca = b.idbiblioteca')
-            ->distinct()
-            ->all();
-
-        return $this->render('info', [
-            'topBooksByAsignatura' => $topBooksByAsignatura,
-            'meses' => $meses,
-            'anios' => $anios,
-            'mesSeleccionado' => $mes,
-            'anioSeleccionado' => $anio,
-            'bibliotecaSeleccionada' => $biblioteca,
-            'asignaturaSeleccionada' => $asignatura,
-            'asignaturas' => $asignaturas,
-            'bibliotecas' => $bibliotecas,
-            'chartData' => $chartData,
-        ]);
+    Yii::$app->response->sendContentAsFile($csvContent, 'plantilla_libros.csv', [
+        'mimeType' => 'text/csv',
+        'forceDownload' => true,
+    ]);
+}
 
 
-
-    }*/
-
-    
 }

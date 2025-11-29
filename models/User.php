@@ -189,4 +189,5 @@ $this->password =md5($password);
 
 		return false;
     }
+    
 }

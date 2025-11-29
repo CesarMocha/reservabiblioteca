@@ -11,24 +11,116 @@ date_default_timezone_set('America/Guayaquil'); // Configura la zona horaria de 
 ?>
 
 <style>
+    /* Estilos generales */
+    body {
+        background-color: #f0f4f8; /* Fondo claro para la página */
+        font-family: 'Arial', sans-serif;
+    }
+
     .custom-form {
-        background-color: #f7f7f7;
-        padding: 20px;
+        background-color: #ffffff; /* Fondo blanco para el formulario */
+        padding: 30px;
         border: 1px solid #e5e5e5;
-        border-radius: 5px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        max-width: 900px;
+        margin: 0 auto;
     }
 
     .form-title {
-        font-size: 24px;
+        font-size: 28px;
+        font-weight: 600;
+        color: #4a90e2; /* Color azul para el título */
         margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .form-group .form-control {
+        border-radius: 8px;
+        box-shadow: none;
+        border: 1px solid #ddd;
+        font-size: 16px;
+        padding: 10px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .form-group .form-control:focus {
+        border-color: #4a90e2; /* Color azul al enfocar */
+        box-shadow: 0 0 5px rgba(74, 144, 226, 0.4);
+    }
+
+    .btn {
+        border-radius: 30px;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Estilos para los botones */
+    .btn-success {
+        background-color: #4CAF50; /* Verde para el botón de éxito */
+        border: none;
+    }
+
+    .btn-success:hover {
+        background-color: #45a049;
+    }
+
+    .btn-warning {
+        background-color: #ff9800; /* Naranja para el botón de advertencia */
+        border: none;
+    }
+
+    .btn-warning:hover {
+        background-color: #e68900;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .dynamic-fields {
+        margin-top: 15px;
+    }
+
+    .form-group.text-center {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .form-message {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .form-message.success {
+        color: green;
+    }
+
+    .form-message.error {
+        color: red;
     }
 </style>
 
-<div class="prestamo-form custom-form">
-    <h1 class="form-title">Detalles de Solicitud</h1>
 
-    <div id="form-message" style="display:none; color:red;"></div> <!-- Mensaje de error -->
-    <div id="form-success-message" style="display:none; color:green;">Préstamo generado con éxito.</div> <!-- Mensaje de éxito -->
+<div class="prestamo-form custom-form">
+<h1 class="form-title">Formulario de Solicitud de Préstamo</h1>
+
+    <div id="form-message" class="form-message error" style="display:none;">Por favor, rellene todos los campos correctamente.</div>
+    <div id="form-success-message" class="form-message success" style="display:none;">Préstamo generado con éxito.</div>
 
     <?php $form = ActiveForm::begin(['id' => 'prestamo-form']); ?>
 
@@ -39,7 +131,7 @@ date_default_timezone_set('America/Guayaquil'); // Configura la zona horaria de 
                     \yii\helpers\ArrayHelper::map(\app\models\Biblioteca::find()->all(), 'idbiblioteca', 'Campus'),
                     ['prompt' => 'Seleccione Campus']
                 ) ?>
-                
+
             <?= $form->field($model, 'field_choice')->dropDownList([
                 'personaldata_Ci' => 'Solicitante Externo',
                 'informacionpersonal_CIInfPer' => 'Estudiante de la Institución',
@@ -80,7 +172,6 @@ date_default_timezone_set('America/Guayaquil'); // Configura la zona horaria de 
 
         </div>
         <div class="col-md-6">
-
             <?= $form->field($model, 'intervalo_solicitado')
                 ->textInput(['type' => 'time', 'value' => '01:00:00']) ?>
 
@@ -168,3 +259,4 @@ $('#new-loan-button').on('click', function() {
 JS;
 
 $this->registerJs($script);
+?>

@@ -17,8 +17,8 @@ class PcSearch extends Pc
     public function rules()
     {
         return [
-            [['idpc', 'nombre', 'estado'], 'safe'],
-            [['biblioteca_idbiblioteca'], 'integer'],
+            [['idpc', 'biblioteca_idbiblioteca'], 'integer'],
+            [['nombre', 'estado'], 'safe'],
         ];
     }
 
@@ -35,10 +35,11 @@ class PcSearch extends Pc
      * Creates data provider instance with search query applied
      *
      * @param array $params
+     * @param string|null $formName Form name to be used into `->load()` method.
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $formName = null)
     {
         $query = Pc::find();
 
@@ -48,7 +49,7 @@ class PcSearch extends Pc
             'query' => $query,
         ]);
 
-        $this->load($params);
+        $this->load($params, $formName);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -58,11 +59,11 @@ class PcSearch extends Pc
 
         // grid filtering conditions
         $query->andFilterWhere([
+            'idpc' => $this->idpc,
             'biblioteca_idbiblioteca' => $this->biblioteca_idbiblioteca,
         ]);
 
-        $query->andFilterWhere(['like', 'idpc', $this->idpc])
-            ->andFilterWhere(['like', 'nombre', $this->nombre])
+        $query->andFilterWhere(['like', 'nombre', $this->nombre])
             ->andFilterWhere(['like', 'estado', $this->estado]);
 
         return $dataProvider;

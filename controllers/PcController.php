@@ -49,7 +49,7 @@ class PcController extends Controller
 
     /**
      * Displays a single Pc model.
-     * @param string $idpc Idpc
+     * @param int $idpc Idpc
      * @param int $biblioteca_idbiblioteca Biblioteca Idbiblioteca
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -86,7 +86,7 @@ class PcController extends Controller
     /**
      * Updates an existing Pc model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $idpc Idpc
+     * @param int $idpc Idpc
      * @param int $biblioteca_idbiblioteca Biblioteca Idbiblioteca
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
@@ -107,7 +107,7 @@ class PcController extends Controller
     /**
      * Deletes an existing Pc model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $idpc Idpc
+     * @param int $idpc Idpc
      * @param int $biblioteca_idbiblioteca Biblioteca Idbiblioteca
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
@@ -122,7 +122,7 @@ class PcController extends Controller
     /**
      * Finds the Pc model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $idpc Idpc
+     * @param int $idpc Idpc
      * @param int $biblioteca_idbiblioteca Biblioteca Idbiblioteca
      * @return Pc the loaded model
      * @throws NotFoundHttpException if the model cannot be found
@@ -133,6 +133,25 @@ class PcController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
+  
+public function actionPrestar($idpc, $biblioteca_idbiblioteca)
+{
+    $model = $this->findModel($idpc, $biblioteca_idbiblioteca);
+    
+    // Verificamos que el PC esté disponible antes de prestarlo
+    if ($model->estado === 'D') {
+        $model->estado = 'ND'; // 'ND' significa No Disponible
+        if ($model->save(false)) {
+            Yii::$app->session->setFlash('success', 'El PC ha sido prestado.');
+        } else {
+            Yii::$app->session->setFlash('error', 'No se pudo prestar el PC.');
+        }
+    } else {
+        Yii::$app->session->setFlash('warning', 'El PC no está disponible para préstamo.');
+    }
+
+    return $this->redirect(['index']);
+}
 }

@@ -362,11 +362,11 @@ if ($model->tipoprestamo_id === 'COMP') {
 
         // Obtener los datos de libro limitando a 10 elementos
         $queryLibro = new \yii\db\Query();
-        $queryLibro->select(['MONTH(fecha_solicitud) AS mes', 'libro_id', 'COUNT(*) AS cantidad'])
+        $queryLibro->select(['MONTH(fecha_solicitud) AS mes', 'id', 'COUNT(*) AS cantidad'])
             ->from('prestamo')
             ->where(['MONTH(fecha_solicitud)' => $mesSeleccionado, 'YEAR(fecha_solicitud)' => $anioSeleccionado])
             ->andFilterWhere(['biblioteca_idbiblioteca' => $bibliotecaSeleccionada]) // Cambio aquí
-            ->groupBy(['mes', 'libro_id'])
+            ->groupBy(['mes', 'lid'])
             ->orderBy(['mes' => SORT_ASC, 'cantidad' => SORT_DESC])
             ->distinct()
             ->limit(10); // Limitar a 10 elementos
@@ -377,7 +377,7 @@ if ($model->tipoprestamo_id === 'COMP') {
 
         foreach ($dataLibro as $row) {
             $mes = $row['mes'];
-            $libroId = $row['libro_id'];
+            $libroId = $row['id'];
             $cantidad = $row['cantidad'];
 
             // Obtén información del libro, incluyendo el nombre
@@ -737,7 +737,7 @@ $prestamosPorCarreraYFecha[] = $filaTotal;
             ->limit(10);
 
         if ($asignaturaSeleccionada !== null) {
-            $query->andWhere(['libro.asignatura_IdAsig' => $asignaturaSeleccionada]);
+            $query->andWhere(['libro.asignatura_id' => $asignaturaSeleccionada]);
         }
 
         if ($bibliotecaSeleccionada !== null) {

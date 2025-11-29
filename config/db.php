@@ -2,20 +2,20 @@
 
 return [
     'class' => 'yii\db\Connection',
-    //'dsn' => 'mysql:host=localhost;dbname=sistemabiblioteca',
-    //'username' => 'superadmin',
-  //  'password' => '12345francos',
+    //'dsn' => ''mysql:host=localhost;dbname=reservabiblioteca',
+    //'username' => 'pervis',
+  //  'password' => '',
    // 'charset' => 'utf8',
 
     // Schema cache options (for production environment)
     //'enableSchemaCache' => true,
     //'schemaCacheDuration' => 60,
     //'schemaCache' => 'cache',
- 	'dsn' => 'mysql:host=localhost;dbname=siad',
+ 	'dsn' => 'mysql:host=localhost;dbname=biblioteca',
 
     	'username' => 'root',
 
-	'password' => 'Tics.2018@@',
+	'password' => '',
 	//'password' => '1237894560',
     	'charset' => 'utf8',
     	'enableLogging' => true, // Habilitar el registro de consultas SQL
